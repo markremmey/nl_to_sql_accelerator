@@ -1,0 +1,476 @@
+  {
+  "table": "bls_consumer_price_index",
+  "description": "The Consumer Price Index (CPI) is a statistical measure of change, over time, of the prices of goods and services in major expenditure groups--such as food, housing, apparel, transportation, and medical care--typically purchased by urban consumers. Essentially, it compares the cost of a sample \"market basket\" of goods and services in a specific month relative to the cost of the same \"market basket\" in an earlier reference period. This reference period is designated as the base period.",
+  "columns": [
+    {
+      "name": "area_name",
+      "description": "Name of specific geographic area"
+    },
+    {
+      "name": "area_type",
+      "description": "The type of area (metro area, census region, or nationwide)"
+    },
+    {
+      "name": "item_name",
+      "description": "Full names of the item or expenditure group for which the CPI value is available"
+    },
+    {
+      "name": "item_type",
+      "description": "The level of the item in the item hierarchy. Provides a way of grouping and filtering different items based on their level of detail. The levels are (from highest to lowest) - 1: All Items, 2: Major Group, 3: Intermediate Aggregates, 4: Expenditure Class, 5: Item"
+    },
+    {
+      "name": "seasonal",
+      "description": "Identifies whether the data are seasonally adjusted or not"
+    },
+    {
+      "name": "base_name",
+      "description": "Identifies the type of base period used in the index. A value of 'Current' means the base of the index is 1982-1984 = 100."
+    },
+    {
+      "name": "period_name",
+      "description": "Full name of the period to which the data observation refers. Either the name of the month or 'Annual'"
+    },
+    {
+      "name": "month_number",
+      "description": "The number corresponding to each month in the year (i.e. January = 1, December = 12, Annual = 13)"
+    },
+    {
+      "name": "period_type",
+      "description": "Indicates the type of period to which the data observation refers"
+    },
+    {
+      "name": "periodicity_name",
+      "description": "The frequency of data observation"
+    },
+    {
+      "name": "year",
+      "description": "The year of observation"
+    },
+    {
+      "name": "value",
+      "description": "The price index for an item"
+    }
+  ]
+},
+{
+  "table": "bls_current_employment",
+  "description": "The Current Employment Statistics (CES) program provides estimates of employment, hours, and earnings information on a national basis and in considerable industry detail. Employment data include series for total employment, number of women employees, and number of production or nonsupervisory employees. Estimates of average hourly earnings, average weekly hours, average weekly earnings, and average weekly overtime hours are produced for both all employees and for production or nonsupervisory employees. Overtime hours are produced for manufacturing industries only.",
+  "columns": [
+    {
+      "name": "data_type",
+      "description": "The name of the observation type"
+    },
+    {
+      "name": "supersector_name",
+      "description": "The name of the supersector"
+    },
+    {
+      "name": "industry_name",
+      "description": "Name of industry"
+    },
+    {
+      "name": "year",
+      "description": "The year of observation"
+    },
+    {
+      "name": "period_name",
+      "description": "Full name of the period to which the data observation refers"
+    },
+    {
+      "name": "period_type",
+      "description": "Indicates the type of period to which the data observation refers"
+    },
+    {
+      "name": "value",
+      "description": "Data value for the series"
+    },
+    {
+      "name": "seasonal",
+      "description": "Identifies whether the data are seasonally adjusted or not"
+    }
+  ]
+},
+{
+  "table": "bls_earnings",
+  "description": "Earnings data are available for all workers, with data available by age, race, Hispanic or Latino ethnicity, sex, occupation, usual full- or part-time status, educational attainment, and other characteristics.",
+  "columns": [
+    {
+      "name": "full_or_part_time",
+      "description": "Indicates whether the value applies to full-time workers, part-time workers, or both"
+    },
+    {
+      "name": "location_name",
+      "description": "The name of the state the data value applies to - can either be a US state or 'U.S. Total'"
+    },
+    {
+      "name": "measure",
+      "description": "What the row in the table is actually measuring"
+    },
+    {
+      "name": "union_status",
+      "description": "Indicates whether the workers are represented by a union or are members of a union."
+    },
+    {
+      "name": "industry_name",
+      "description": "The name of the industry"
+    },
+    {
+      "name": "occupation_name",
+      "description": "The name of the occupation"
+    },
+    {
+      "name": "education",
+      "description": "The level of education"
+    },
+    {
+      "name": "age",
+      "description": "The age group of the workers - generally, the labor force is defined as all persons aged 16 or over"
+    },
+    {
+      "name": "race",
+      "description": "The race of the workers being measured"
+    },
+    {
+      "name": "national_origin",
+      "description": "Indicates whether the workers are Hispanic/Latino or not"
+    },
+    {
+      "name": "sex",
+      "description": "Does the observation refer to men, women, or both sexes?"
+    },
+    {
+      "name": "native_foreign_born",
+      "description": "Does the observation refer to foreign-born or native-born workers?"
+    },
+    {
+      "name": "year",
+      "description": "The year of the data observation"
+    },
+    {
+      "name": "value",
+      "description": "The value of the observation"
+    }
+  ]
+},
+{
+  "table": "bls_job_turnover",
+  "description": "The Job Openings and Labor Turnover Survey program provides national estimates of rates and levels for job openings, hires, and total separations. Total separations are further broken out into quits, layoffs and discharges, and other separations.",
+  "columns": [
+    {
+      "name": "data_element",
+      "description": "The type of observation (hires, quits, etc.)"
+    },
+    {
+      "name": "industry_name",
+      "description": "The name of the industry"
+    },
+    {
+      "name": "rate_level",
+      "description": "Indicates whether the observation is a raw number ('Level') or a rate of change ('Rate')"
+    },
+    {
+      "name": "seasonal",
+      "description": "Indicates whether the observation is seasonally-adjusted or not"
+    },
+    {
+      "name": "size_class",
+      "description": "The number of employees at the businesses being observed"
+    },
+    {
+      "name": "state",
+      "description": "The US state to which the observation refers"
+    },
+    {
+      "name": "value",
+      "description": "The value of the observation"
+    },
+    {
+      "name": "month_name",
+      "description": "The name of the month of the observation - 'Annual' is for the whole year"
+    },
+    {
+      "name": "month_number",
+      "description": "The number corresponding to each month in the year (i.e. January = 1, December = 12, Annual = 13)"
+    },
+    {
+      "name": "year",
+      "description": "The year of the data observation"
+    }
+  ]
+},
+{
+  "table": "bls_labor_force_statistics",
+  "description": "Contains information on the labor force data on characteristics of employed and unemployed persons and persons not in the labor force.",
+  "columns": [
+    {
+      "name": "age_group",
+      "description": "The age group of the workers - generally, the labor force is defined as all persons aged 16 or over"
+    },
+    {
+      "name": "foreign_native_born",
+      "description": "Does the observation refer to foreign-born or native-born workers?"
+    },
+    {
+      "name": "level_of_education",
+      "description": "The level of education"
+    },
+    {
+      "name": "industry_name",
+      "description": "The name of the industry"
+    },
+    {
+      "name": "labor_force_status",
+      "description": "The subset of the population or labor force the observation refers to"
+    },
+    {
+      "name": "occupation",
+      "description": "The name of the occupation the observation refers to"
+    },
+    {
+      "name": "hispanic_origin",
+      "description": "Identifier that groups together Hispanic and non-Hispanic workers"
+    },
+    {
+      "name": "race",
+      "description": "The race of the workers being measured"
+    },
+    {
+      "name": "sex",
+      "description": "Does the observation refer to men, women, or both sexes?"
+    },
+    {
+      "name": "unit_of_measure",
+      "description": "The unit of measure for the data value"
+    },
+    {
+      "name": "veteran_status",
+      "description": "Indicates whether the observation refers to veterans or non-veterans"
+    },
+    {
+      "name": "period_name",
+      "description": "Full name of the period to which the data observation refers. Either the name of the month or 'Annual'"
+    },
+    {
+      "name": "month_number",
+      "description": "The number corresponding to each month in the year (i.e. January = 1, December = 12, Annual = 13)"
+    },
+    {
+      "name": "year",
+      "description": "The year of the data observation"
+    },
+    {
+      "name": "value",
+      "description": "The value of the observation"
+    }
+  ]
+},
+{
+  "table": "bea_gross_domestic_product_by_quarter",
+  "description": "Gross Domestic Product (GDP) is the value of the goods and services produced in a given area.The percentage that GDP grew (or shrank) from one period to another is an important way for Americans to gauge how their economy is doing. BEA estimates the nation's GDP for each year and each quarter. The bea_gross_domestic_product_by_quarter table gives the values for GDP and components of GDP on a quarterly basis. \"Real\" or \"chained\" GDP numbers have been adjusted to remove the effects of inflation over time, so different periods can be compared. \"Current-dollar\" or \"nominal\" GDP estimates are based on market prices during the period being measured. Quarterly GDP data are seasonally adjusted to remove the effects of yearly patterns, such as winter weather, holidays, or factory production schedules and are reported at annual rates. The data in bea_gross_domestic_product_by_quarter is dissaggregated by geography, by measure, and by industry",
+  "columns": [
+    {
+      "name": "measurement_code",
+      "description": "The code given to a measure subtable by BEA"
+    },
+    {
+      "name": "measurement_name",
+      "description": "The measurement for a row. Real GDP by state refers to real GDP"
+    },
+    {
+      "name": "industry_name",
+      "description": "the name of the industry"
+    },
+    {
+      "name": "industry_type",
+      "description": "The level of the industry in the industry hierarchy. Provides a way of grouping and filtering different items based on their level of detail. The levels are (from highest to lowest) - 1: Total, 2: Sector, 3: Subsector"
+    },
+    {
+      "name": "unit_of_measure",
+      "description": "unit"
+    },
+    {
+      "name": "area_name",
+      "description": "The name of the geographic area"
+    },
+    {
+      "name": "area_type",
+      "description": "The type of area. Either 'Nationwide', 'Region', or 'State'"
+    },
+    {
+      "name": "quarter",
+      "description": "The code corresponding to each quarter in the year (i.e. Quarter 1 = Q1)"
+    },
+    {
+      "name": "year",
+      "description": "Year"
+    },
+    {
+      "name": "value",
+      "description": "The value of the series"
+    }
+  ]
+},
+{
+  "table": "bea_gross_domestic_product_by_year",
+  "description": "Gross Domestic Product (GDP) is the value of the goods and services produced in a given area.The percentage that GDP grew (or shrank) from one period to another is an important way for Americans to gauge how their economy is doing. BEA estimates the nation's GDP for each year and each quarter. The bea_gross_domestic_product_by_year table gives the values for GDP and components of GDP on a yearly basis. \"Real\" or \"chained\" GDP numbers have been adjusted to remove the effects of inflation over time, so different periods can be compared. \"Current-dollar\" or \"nominal\" GDP estimates are based on market prices during the period being measured. The data in bea_gross_domestic_product_by_year is dissaggregated by geography, by measure, and by industry",
+  "columns": [
+    {
+      "name": "measurement_code",
+      "description": "The code given to a measure subtable by BEA"
+    },
+    {
+      "name": "measurement_name",
+      "description": "The measurement for a row. Real GDP by state refers to real GDP"
+    },
+    {
+      "name": "industry_name",
+      "description": "the name of the industry"
+    },
+    {
+      "name": "industry_type",
+      "description": "The level of the industry in the industry hierarchy. Provides a way of grouping and filtering different items based on their level of detail. The levels are (from highest to lowest) - 1: Total, 2: Sector, 3: Subsector. "
+    },
+    {
+      "name": "unit_of_measure",
+      "description": "unit"
+    },
+    {
+      "name": "area_name",
+      "description": "The name of the geographic area"
+    },
+    {
+      "name": "area_type",
+      "description": "The type of area. Either 'Nationwide', 'Region', or 'State'"
+    },
+    {
+      "name": "year",
+      "description": "Year"
+    },
+    {
+      "name": "value",
+      "description": "The value of the series"
+    }
+  ]
+},
+{
+  "table": "bea_personal_consumption_expenditures_aggregate",
+  "description": "Personal Consumption Expenditure refers to the goods and services purchased by, or on behalf of, people living in the United States. Consumer spending is a key component of quarterly gross domestic product. The bea_personal_consumption_expenditures_aggregate table provides the aggregate values for personal consumption expenditure.",
+  "columns": [
+    {
+      "name": "measurement_code",
+      "description": "The code given to a measure subtable by BEA"
+    },
+    {
+      "name": "measurement_name",
+      "description": "The measurement for a row"
+    },
+    {
+      "name": "product_category_name",
+      "description": "the name of the product category"
+    },
+    {
+      "name": "product_category_type",
+      "description": "The level of the product category in the product category hierarchy. Provides a way of grouping and filtering different items based on their level of detail. The levels are (from highest to lowest) - 1: Total, 2: Goods or Services, 3: Category, 4: Product Type. Typically Product Type has the most meaning when listing categories for users"
+    },
+    {
+      "name": "unit_of_measure",
+      "description": "unit"
+    },
+    {
+      "name": "area_name",
+      "description": "The name of the geographic area"
+    },
+    {
+      "name": "area_type",
+      "description": "The type of area. Either 'Nationwide', 'Region', or 'State'"
+    },
+    {
+      "name": "year",
+      "description": "Year"
+    },
+    {
+      "name": "value",
+      "description": "The value of the series"
+    }
+  ]
+},
+{
+  "table": "bea_personal_consumption_expenditures_per_capita",
+  "description": "Personal Consumption Expenditure refers to the goods and services purchased by, or on behalf of, people living in the United States. Consumer spending is a key component of quarterly gross domestic product. The bea_personal_consumption_expenditures_per_capita table provides the per capita values for personal consumption expenditure.",
+  "columns": [
+    {
+      "name": "measurement_code",
+      "description": "The code given to a measure subtable by BEA"
+    },
+    {
+      "name": "measurement_name",
+      "description": "The measurement for a row"
+    },
+    {
+      "name": "product_category_name",
+      "description": "the name of the product category"
+    },
+    {
+      "name": "product_category_type",
+      "description": "The level of the product category in the product category hierarchy. Provides a way of grouping and filtering different items based on their level of detail. The levels are (from highest to lowest) - 1: Total, 2: Goods or Services, 3: Category, 4: Product Type. Typically Product Type has the most meaning when listing categories for users"
+    },
+    {
+      "name": "unit_of_measure",
+      "description": "unit"
+    },
+    {
+      "name": "area_name",
+      "description": "The name of the geographic area"
+    },
+    {
+      "name": "area_type",
+      "description": "The type of area. Either 'Nationwide', 'Region', or 'State'"
+    },
+    {
+      "name": "year",
+      "description": "Year"
+    },
+    {
+      "name": "value",
+      "description": "The value of the series"
+    }
+  ]
+},
+{
+  "table": "bls_local_area_unemployment_statistics",
+  "description": "Monthly labor force and unemployment series are available for approximately 7,500 geographic areas, including cities over 25,000 population, counties, metropolitan areas, States, and other areas. For each area, the following measures are presented by place of residence: Total civilian labor force, Total number of people employed, Total number of people unemployed, and Unemployment rate. For states, three additional measures are available: Civilian noninstitutional population, Labor force participation rate, and Employment-population ratio",
+  "columns": [
+    {
+      "name": "area_name",
+      "description": "Name of specific geographic area"
+    },
+    {
+      "name": "area_type",
+      "description": "The type of area"
+    },
+    {
+      "name": "measure",
+      "description": "What the row in the table is actually measuring"
+    },
+    {
+      "name": "seasonal",
+      "description": "Indicates whether the data are seasonally adjusted or not"
+    },
+    {
+      "name": "state_region_division",
+      "description": "The name of the state the area is located in, or 'Census Regions And Divisions' if the area_name refers to a US region or division that spans across multiple states"
+    },
+    {
+      "name": "period_name",
+      "description": "Full name of the period to which the data observation refers. Either the name of the month or 'Annual'"
+    },
+    {
+      "name": "year",
+      "description": "The year of the data observation"
+    },
+    {
+      "name": "value",
+      "description": "The value of the data observation"
+    }
+  ]
+}

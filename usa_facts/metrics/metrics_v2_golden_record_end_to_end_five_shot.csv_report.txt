@@ -1,0 +1,13 @@
+nl_to_sql_execution_time                                        14.815690
+sql_to_nl_execution_time                                         6.082101
+SQL Execution Exact Match                                        0.648352
+SQL Query Execution Validity                                     0.989011
+SQL Query Critic Score                                           0.978022
+SQL Execution Is Empty                                           0.296703
+Ground Truth SQL Executed vs Generated SQL cosine similarity     0.935559
+Ground Truth SQL Execution Is Empty                              0.164835
+SQL Query Exact Match                                            0.000000
+E2E Groundedness                                                 1.000000
+E2E Relevance                                                    0.978022
+retries                                                          0.098901
+dtype: float64
