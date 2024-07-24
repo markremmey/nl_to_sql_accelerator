@@ -1,0 +1,17 @@
+question,SQL Query,nl_to_sql_execution_time,ground_truth_validity,SQL-to-NL response,sql_to_nl_execution_time,SQL Query Results,Ground Truth SQL-to-NL response,Ground Truth SQL Execution Results,retries
+How many products are currently listed in the Product table?,"SELECT COUNT(ProductID) AS ProductCount
+FROM SalesLT.Product
+-- This query counts the number of products currently listed in the Product table by counting the ProductID column.",1.048708455004089,,There are currently 295 products listed in the Product table.,0.49082839200127637,"[(295,)]",,,0
+How many orders have been placed in the current year?,"SELECT COUNT(*) AS OrderCount
+FROM SalesLT.SalesOrderHeader
+WHERE YEAR(OrderDate) = YEAR(GETDATE())
+-- This query counts the number of orders placed in the current year by filtering the SalesOrderHeader table where the year of the OrderDate matches the current year.",1.2514508810054394,,"As of the current year, no orders have been placed. The query results indicate that the count of orders in the SalesOrderHeader table for the current year is zero.",0.8555623110005399,"[(0,)]",,,0
+What is the average weight of products in the Product table?,"SELECT AVG(Weight) AS AverageWeight
+FROM SalesLT.Product
+-- This query calculates the average weight of all products in the SalesLT.Product table. The result is returned as AverageWeight.",57.98014761300146,,The average weight of products in the Product table is approximately 5483.71 units.,0.5382857879958465,"[(Decimal('5483.705606'),)]",,,0
+List the details of orders placed in the last 30 days.,"SELECT soh.SalesOrderID, soh.OrderDate, soh.CustomerID, soh.TotalDue
+FROM SalesLT.SalesOrderHeader soh
+WHERE soh.OrderDate >= DATEADD(DAY, -30, GETDATE())
+ORDER BY soh.OrderDate DESC;
+-- This query selects the SalesOrderID, OrderDate, CustomerID, and TotalDue from the SalesOrderHeader table
+-- where the OrderDate is within the last 30 days from the current date. The results are ordered by OrderDate in descending order.",1.9519939460005844,,"Based on the execution results of the SQL query, there are no orders placed in the last 30 days. The query returned an empty result set, indicating that no records in the `SalesLT.SalesOrderHeader` table have an `OrderDate` within the specified time frame.",1.2849252930027433,[],,,0

@@ -46,7 +46,7 @@ def is_sql_execution_empty(execution_result):
 
 def end_to_end_groundedness(generated_query, query_execution_result, answer, client):
 
-    system_prompt = """You are an AI assistant. You will be given the definition of an evaluation metric for assessing the quality of an answer in a government stats  question-answering task. Your job is to compute an accurate evaluation score using the provided evaluation metric.
+    system_prompt = """You are an AI assistant. You will be given the definition of an evaluation metric for assessing the quality of an answer in a question-answering task. Your job is to compute an accurate evaluation score using the provided evaluation metric.
 
     You will be presented with a CONTEXT and an ANSWER about that CONTEXT. You need to decide whether the ANSWER is entailed by the CONTEXT by choosing one of the following rating:
 
@@ -61,10 +61,10 @@ def end_to_end_groundedness(generated_query, query_execution_result, answer, cli
     Independent Examples:
     Example Task #1 Input:
     "CONTEXT": 
-    Query: "SELECT industry_name, SUM(value) as total_job_openings FROM bls_job_turnover WHERE state = 'Washington' AND year = 2020 GROUP BY industry_name ORDER BY total_job_openings DESC LIMIT 1 -- selects the industry with the most job openings in Washington in 2020"
-    Query results: Total nonfarm
+    Query: "SELECT COUNT(DISTINCT Name) AS UniqueCategories FROM SalesLT.ProductCategory; -- selects the number of unique product categories"
+    Query results: 41
     
-    "ANSWER": "The industry with the most job openings in Washington in 2020 was 'Total nonfarm'."
+    "ANSWER": "There are 41 unique product categories in the database."
 
     Example Task #1 Output:
     10

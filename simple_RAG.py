@@ -1,5 +1,6 @@
 import argparse
 import os
+from dotenv import load_dotenv
 import re
 from time import perf_counter
 
@@ -25,6 +26,7 @@ from prompt_utils import (
     make_message_system,
     make_message_user,
 )
+import pyodbc
 from retry import retry
 from utils.database import run_query
 from utils.metrics import calculate_cosine
@@ -34,30 +36,30 @@ from utils.metrics import calculate_cosine
 # TODO: What happens with really long sql execution results?
 # TODO: Consider using non GT document
 
-
+load_dotenv()
 API_KEY = os.getenv("AOAI_API_KEY")
 DB_PASSWORD = os.getenv("DB_PASSWORD")
 SKIP_INVALID_GROUND_TRUTH = True
 
-DB_CONNECTION = psycopg2.connect(
-    host=DB_HOST,
-    user=DB_USER,
-    password=DB_PASSWORD,
-    port=DB_PORT,
-    dbname=DB_NAME,
-    connect_timeout=10,
-    options="-c statement_timeout=120000 -c search_path=bamboo",
-)
+
+connection_string = f"DRIVER={{ODBC Driver 17 for SQL Server}};SERVER={DB_HOST},{DB_PORT};DATABASE={DB_NAME};UID={DB_USER};PWD={DB_PASSWORD}"
+
+# Connect to the SQL Server database
+try:
+    DB_CONNECTION = pyodbc.connect(connection_string, timeout=30)
+    print("Database connection established.")
+except Exception as e:
+    print(f"An error occurred while connecting to the database: {e}")
+    DB_CONNECTION = None
 
 
 def set_up_client():
     client = AzureOpenAI(
         azure_endpoint=RESOURCE_ENDPOINT,
         api_key=API_KEY,
-        api_version="2023-07-01-preview",
+        api_version="2024-05-01-preview",
     )
     return client
-
 
 @retry(delay=1, backoff=1.1, tries=5)
 def get_embeddings(client, text, model=EMBEDDINGS_ENGINE):
@@ -97,7 +99,7 @@ def get_top_k_most_similar_examples(
 def format_examples(df):
 
     context = [
-        f"Question: {q}\nPostgreSQL Query: {sql}\n\n"
+        f"Question: {q}\nMicrosoft SQL Server Query: {sql}\n\n"
         for q, sql in zip(df["question"], df["sql_query"])
     ]
     return "".join(context)
@@ -158,6 +160,8 @@ def run_nl_to_sql(
     if retry_error and previous_try:
         nl_to_sql_user_prompt = f"{nl_to_sql_user_prompt}\n\nYou already tried once with:\n{previous_try}It failed with: {retry_error}\n\n"
 
+    print("nl_to_sql_system_prompt", nl_to_sql_system_prompt)
+    print("nl_to_sql_user_prompt", nl_to_sql_user_prompt)
     tic = perf_counter()
     sql_completion = call_gpt(
         client, nl_to_sql_system_prompt, nl_to_sql_user_prompt, GPT4_ENGINE_32k
@@ -218,22 +222,23 @@ def run_end_to_end(
     retries = []
 
     schema = open(schema_desc_path, "r").read()
-
+    # print(f"Schema description:\n{schema}")
     query_df = pd.read_csv(query_csv_path)
     for input_query in query_df["question"]:
         retry_counter = 0
-        ground_truth = find_ground_truth_if_it_exists(input_query)
-        if ground_truth:
-            print("Ground Truth SQL:")
-            print(f"\033[94m{ground_truth}\033[0m")
-        else:
-            print("No ground truth found")
-        ground_truth_is_invalid = "Error" not in run_query(ground_truth, DB_CONNECTION)
+        # ground_truth = find_ground_truth_if_it_exists(input_query)
+        # if ground_truth:
+        #     print("Ground Truth SQL:")
+        #     print(f"\033[94m{ground_truth}\033[0m")
+        # else:
+        #     print("No ground truth found")
+        # ground_truth_is_invalid = "Error" not in run_query(ground_truth, DB_CONNECTION)
 
         # Step 1: NL->SQL
         sql_completion, nl_to_sql_execution_time = run_nl_to_sql(
             input_query, client, embeddings_db, top_k, schema
         )
+        print(f"SQL completion: {sql_completion}")
         # Step 2: SQL->NL
         (
             sql_to_nl_completion,
@@ -294,11 +299,11 @@ def run_end_to_end(
             nl_to_sql_execution_time += nl_to_sql_execution_retry_time
             
         # Runs SQL to NL with ground truth
-        (
-            ground_truth_sql_to_nl_completion,
-            ground_truth_sql_to_nl_execution_time,
-            ground_truth_sql_execution_result,
-        ) = run_sql_to_nl(input_query, client, ground_truth)
+        # (
+        #     ground_truth_sql_to_nl_completion,
+        #     ground_truth_sql_to_nl_execution_time,
+        #     ground_truth_sql_execution_result,
+        # ) = run_sql_to_nl(input_query, client, ground_truth)
         
        
         
@@ -308,19 +313,19 @@ def run_end_to_end(
 
         nl_to_sql_completions.append(sql_completion)
         nl_to_sql_execution_times.append(nl_to_sql_execution_time)
-        ground_truths.append(ground_truth if ground_truth else "Not Found")
-        ground_truth_validities.append(ground_truth_is_invalid)
+        # ground_truths.append(ground_truth if ground_truth else "Not Found")
+        # ground_truth_validities.append(ground_truth_is_invalid)
         sql_to_nl_completions.append(sql_to_nl_completion)
         sql_to_nl_execution_times.append(sql_to_nl_execution_time)
         sql_execution_results.append(str(sql_execution_result))
-        ground_truth_sql_to_nl_completions.append(ground_truth_sql_to_nl_completion)
-        ground_truth_sql_execution_results.append(
-            str(ground_truth_sql_execution_result)
-        )
+        # ground_truth_sql_to_nl_completions.append(ground_truth_sql_to_nl_completion)
+        # ground_truth_sql_execution_results.append(
+        #     str(ground_truth_sql_execution_result)
+        # )
         retries.append(retry_counter)
 
     nl_to_sql_completion_df = pd.DataFrame(nl_to_sql_completions, columns=["SQL Query"])
-    ground_truth_df = pd.DataFrame(ground_truths, columns=["ground_truth"])
+    # ground_truth_df = pd.DataFrame(ground_truths, columns=["ground_truth"])
     nl_to_sql_execution_time_df = pd.DataFrame(
         nl_to_sql_execution_times, columns=["nl_to_sql_execution_time"]
     )
@@ -349,7 +354,7 @@ def run_end_to_end(
         [
             query_df,
             nl_to_sql_completion_df,
-            ground_truth_df,
+            # ground_truth_df,
             nl_to_sql_execution_time_df,
             ground_truth_validity_df,
             sql_to_nl_completion_df,

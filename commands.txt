@@ -1,0 +1,1 @@
+python simple_RAG.py --embeddings_database_path embeddings_db.pkl --query_csv_path data/golden_records_questions.csv --top_k 5 --output_file_path results/v2_golden_record_end_to_end_five_shot.csv --schema_desc_path descriptions_text.txt

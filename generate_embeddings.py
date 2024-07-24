@@ -14,17 +14,15 @@ note: output data as .pkl to keep embedding structure
 python generate_embeddings.py <input data path> <output data path> <output file name>
 """
 
-API_KEY = os.getenv("AOAI_CEXP_SWEDEN_API_KEY")  # SET YOUR OWN API KEY HERE
+API_KEY = os.getenv("AOAI_API_KEY")  # SET YOUR OWN API KEY HERE
 
 client = AzureOpenAI(
-    azure_endpoint=RESOURCE_ENDPOINT, api_key=API_KEY, api_version="2023-07-01-preview"
+    azure_endpoint=RESOURCE_ENDPOINT, api_key=API_KEY, api_version="2024-05-01-preview"
 )
-
 
 @retry(delay=1, backoff=1.1, tries=20)
 def get_embeddings(text, model=EMBEDDINGS_ENGINE):
     return client.embeddings.create(input=text, model=model).data[0].embedding
-
 
 def generate_embeddings_database(input_data_df, output_data_path):
     print("Number of input examples:%s" % (len(input_data_df)))

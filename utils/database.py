@@ -6,6 +6,7 @@ def run_query(query, connection, timeout=None):
 
 
 def execute_query(query, connection, timeout):
+    print("Query: ", query)
     with connection.cursor() as cursor:
         if timeout:
             cursor.execute(f"SET statement_timeout TO {timeout};")
