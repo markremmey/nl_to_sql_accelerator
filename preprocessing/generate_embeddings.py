@@ -3,7 +3,7 @@ import os
 
 import pandas as pd
 from constants import EMBEDDINGS_ENGINE, RESOURCE_ENDPOINT
-from golden_records import golden_records
+from src.data.golden_records import golden_records
 from openai import AzureOpenAI
 from retry import retry
 

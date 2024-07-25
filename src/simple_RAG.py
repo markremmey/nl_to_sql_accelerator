@@ -16,9 +16,9 @@ from constants import (
     RESOURCE_ENDPOINT,
     GPT4_ENGINE_32k,
 )
-from golden_records import golden_records
+from src.data.golden_records import golden_records
 from openai import AzureOpenAI
-from prompt_utils import (
+from src.utils.prompt_utils import (
     generate_nl_to_sql_system_prompt,
     generate_nl_to_sql_user_prompt,
     generate_sql_to_nl_system_prompt,
@@ -28,8 +28,8 @@ from prompt_utils import (
 )
 import pyodbc
 from retry import retry
-from utils.database import run_query
-from utils.metrics import calculate_cosine
+from src.utils.database import run_query
+from src.utils.metrics import calculate_cosine
 
 # TODO: Add retry
 # TODO: Consider reformatting the schema to lower token count and make it more readable

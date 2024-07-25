@@ -17,11 +17,6 @@ load_dotenv(override=True)
 API_KEY = os.getenv("AOAI_API_KEY")
 DB_PASSWORD = os.getenv("DB_PASSWORD")
 
-print("DB_HOST: ", DB_HOST)
-print("DB_USER: ", DB_USER)
-print("DB_PORT: ", DB_PORT)
-print("DB_PASSWORD", DB_PASSWORD)
-print("DB_NAME: ", DB_NAME)
 
 table_desc_list = []
 
@@ -35,7 +30,7 @@ connection_string = f"DRIVER={{ODBC Driver 17 for SQL Server}};SERVER={DB_HOST},
 try:
     DB_CONNECTION = pyodbc.connect(connection_string, timeout=30)
     print("Database connection established.")
-except Exception as e:
+except Exception as e: 
     print(f"An error occurred while connecting to the database: {e}")
     DB_CONNECTION = None
 
