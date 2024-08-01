@@ -1,5 +1,11 @@
-question
-How many products are currently listed in the Product table?
-How many orders have been placed in the current year?
-What is the average weight of products in the Product table?
-List the details of orders placed in the last 30 days.
+question,sql_query
+What are the names and email addresses of all customers?,"SELECT FirstName, LastName, EmailAddress FROM SalesLT.Customer;"
+How many products are currently listed in the Product table?,SELECT COUNT(*) AS TotalProducts FROM SalesLT.Product;
+What is the average weight of products in the Product table?,SELECT AVG(Weight) AS AverageWeight FROM SalesLT.Product;
+List the details of orders placed in the last 30 days.,"SELECT * FROM SalesLT.SalesOrderHeader WHERE OrderDate >= DATEADD(day, -30, GETDATE());"
+What are the details of products that cost more than $1000?,"SELECT ProductID, Name, ListPrice FROM SalesLT.Product WHERE ListPrice > 1000;"
+List the names of customers who have not placed any orders.,"SELECT c.FirstName, c.LastName FROM SalesLT.Customer c LEFT JOIN SalesLT.SalesOrderHeader soh ON c.CustomerID = soh.CustomerID WHERE soh.CustomerID IS NULL;"
+How many unique product categories are there?,SELECT COUNT(DISTINCT Name) AS UniqueCategories FROM SalesLT.ProductCategory;
+What is the highest unit price of any product sold?,SELECT MAX(UnitPrice) AS HighestUnitPrice FROM SalesLT.SalesOrderDetail;
+List the names and phone numbers of all customers who have a suffix.,"SELECT FirstName, LastName, Phone FROM SalesLT.Customer WHERE Suffix IS NOT NULL;"
+What are the details of the product with the lowest list price?,"SELECT TOP 1 ProductID, Name, ListPrice FROM SalesLT.Product ORDER BY ListPrice ASC;"
