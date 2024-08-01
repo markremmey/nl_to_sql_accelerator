@@ -6,7 +6,7 @@
 
 3. Generate embeddings 
 
-    python generate_ai_search_vectors.py
+    `python generate_ai_search_vectors.py`
 
 4. Command for generating completions using end-to-end RAG
 
