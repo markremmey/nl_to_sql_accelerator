@@ -1,6 +1,6 @@
 Command for generating embeddings and saving them to disk
 
-    python generate_embeddings.py --output_data_path embeddings_db.pkl
+    python generate_ai_search_vectors.py
 
 Command for generating completions using end-to-end RAG
 
