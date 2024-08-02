@@ -12,4 +12,5 @@
     `streamlit run app.py`
 
 # TO DO
-- Update naming (golden_records --> sql_query_examples)
+- Update authentication
+- Add instructions
