@@ -1,7 +1,8 @@
-Pre-requisites:
+## Pre-requisites:
 - SQL Database (if using sample data, use Azure SQL with Adventure Works dataset)
 - Azure AI Search
-- 
+
+## Instructions 
 1. Create an Azure SQL DB using the Adventure Works Sample Dataset (https://learn.microsoft.com/en-us/sql/samples/adventureworks-install-configure?view=sql-server-ver16&tabs=ssms)
 ![image](https://github.com/user-attachments/assets/97051a38-afc8-4463-b427-2260dd1d048b)
 
@@ -18,6 +19,16 @@ Pre-requisites:
 6. Command to start the application
     `streamlit run app.py`
 
+## Authentication Options
+
+
+## Networking Guidance / Recommendations
+
+
 # TO DO
 - Update authentication
 - Add instructions
+- auth options - use entra ID rather than DB password
+- Consider MySQL, Postgres (could be long-term)
+- Networking - currently I have whitelisted
+- Move to Azure repo - (keep private)
