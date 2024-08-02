@@ -3,7 +3,7 @@ import os
 
 import pandas as pd
 from constants import EMBEDDINGS_ENGINE, RESOURCE_ENDPOINT
-from src.data.golden_records import golden_records
+from data.sql_query_examples import sql_query_examples
 from openai import AzureOpenAI
 from retry import retry
 
@@ -37,7 +37,7 @@ def generate_embeddings_database(input_data_df, output_data_path):
 
 
 def generate_csv():
-    return pd.DataFrame(golden_records)
+    return pd.DataFrame(sql_query_examples)
 
 
 if __name__ == "__main__":

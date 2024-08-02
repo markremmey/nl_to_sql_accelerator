@@ -16,7 +16,7 @@ from constants import (
     RESOURCE_ENDPOINT,
     GPT4_ENGINE_32k,
 )
-from src.data.golden_records import golden_records
+from src.data.sql_query_examples_py import sql_queries
 from openai import AzureOpenAI
 from src.utils.prompt_utils import (
     generate_nl_to_sql_system_prompt,
@@ -27,6 +27,7 @@ from src.utils.prompt_utils import (
     make_message_user,
 )
 import pyodbc
+import requests
 from retry import retry
 from src.utils.database import run_query
 from src.utils.metrics import calculate_cosine
@@ -36,8 +37,9 @@ from src.utils.metrics import calculate_cosine
 # TODO: What happens with really long sql execution results?
 # TODO: Consider using non GT document
 
-load_dotenv()
+load_dotenv(override=True)
 API_KEY = os.getenv("AOAI_API_KEY")
+COGSEARCH_API_KEY=os.getenv("AI_COG_SEARCH_KEY")
 DB_PASSWORD = os.getenv("DB_PASSWORD")
 SKIP_INVALID_GROUND_TRUTH = True
 
@@ -75,31 +77,69 @@ def generate_output_df(top_k):
 def get_top_k_most_similar_examples(
     client, query, embeddings_db, top_k, filter_exact_match=True
 ):
+    endpoint = "https://cogsearch-remmey.search.windows.net"
+    index_name="customer-index"
+    version="2023-11-01"
 
-    embeddings_df = embeddings_db.copy()
-    query_embedding = get_embeddings(client, query, EMBEDDINGS_ENGINE)
+    url = f"{endpoint}/indexes/{index_name}/docs/search?api-version={version}"
 
-    embeddings_df["cosine_similarities"] = embeddings_df.question_embeddings.apply(
-        lambda x: calculate_cosine(list(x), query_embedding)
+    headers = {
+    "Content-Type": "application/json",
+    "api-key": f"{COGSEARCH_API_KEY}"
+    }
+
+    client = AzureOpenAI(
+        azure_endpoint=RESOURCE_ENDPOINT,
+        api_key=API_KEY,
+        api_version="2024-05-01-preview",
     )
 
-    if filter_exact_match:
-        embeddings_df = embeddings_df[embeddings_df["question"] != query]
-    top_k_most_similar = (
-        embeddings_df.sort_values(
-            "cosine_similarities", ascending=False, ignore_index=True
-        )
-        .head(top_k)
-        .reset_index(drop=True)
-    )
+    # @retry(delay=1, backoff=1.1, tries=5)
+    # def get_embeddings(client, text, model=EMBEDDINGS_ENGINE):
+    #     text = text.replace("\n", " ")
+    #     return client.embeddings.create(input=[text], model=model).data[0].embedding
 
-    return top_k_most_similar
+    vector = get_embeddings(client, "How many products are in the Adventure Works database?")
+
+    data={
+    "count": True,
+    "select": "question,sql_query",
+    "vectorQueries": [
+        {
+        "vector": vector,
+        "k": 3,
+        "fields": "embedding",
+        "kind": "vector",
+        'exhaustive': True
+        }
+    ]
+    }
+
+
+
+    print(headers)
+    print('url', url)
+    print('data:', data)
+
+    response = requests.post(url, headers=headers, data=json.dumps(data))
+    print(response.json())
+
+    context_string = ""
+    for example in response.json()['value']:
+        example['question'] = example['question'].strip()
+        example['sql_query'] = example['sql_query'].strip()
+
+        context_string += f"Question: {example['question']}\SQL Query: {example['sql_query']}\n\n"  
+
+    
+
+    return context_string
 
 
 def format_examples(df):
 
     context = [
-        f"Question: {q}\nMicrosoft SQL Server Query: {sql}\n\n"
+        f"Question: {q}\nSQL Server Query: {sql}\n\n"
         for q, sql in zip(df["question"], df["sql_query"])
     ]
     return "".join(context)
@@ -128,7 +168,7 @@ def find_ground_truth_if_it_exists(query):
     return next(
         (
             record["sql_query"]
-            for record in golden_records
+            for record in sql_query_examples
             if record["question"] == query
         ),
         None,

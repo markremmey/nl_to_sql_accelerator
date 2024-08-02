@@ -1,4 +1,4 @@
-golden_records = [
+sql_queries = [
   {
     "question": "What are the details of the top 10 most expensive products?",
     "sql_query": "SELECT TOP 10 ProductID, Name, ListPrice FROM SalesLT.Product ORDER BY ListPrice DESC;"

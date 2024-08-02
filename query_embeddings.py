@@ -35,25 +35,35 @@ def get_embeddings(client, text, model=EMBEDDINGS_ENGINE):
     return client.embeddings.create(input=[text], model=model).data[0].embedding
 
 vector = get_embeddings(client, "How many products are in the Adventure Works database?")
-# vector=[0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
-# print(vector)
 
 data={
   "count": True,
-  "select": "sql_query",
+  "select": "question,sql_query",
   "vectorQueries": [
     {
       "vector": vector,
-      "k": 7,
+      "k": 3,
       "fields": "embedding",
       "kind": "vector",
       'exhaustive': True
     }
   ]
 }
+
 print(headers)
 print('url', url)
 print('data:', data)
-# print(json.dumps(data))
+
 response = requests.post(url, headers=headers, data=json.dumps(data))
-print(response.text)
+print(response.json())
+
+context_string = ""
+for example in response.json()['value']:
+  example['question'] = example['question'].strip()
+  example['sql_query'] = example['sql_query'].strip()
+
+  context_string += f"Question: {example['question']}\SQL Query: {example['sql_query']}\n\n"  
+
+# print(response.json()['value'][0]['question'])
+# print(response.json()['value'][0]['sql_query'])
+print(context_string)

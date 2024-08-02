@@ -28,7 +28,7 @@ def get_embeddings(text, model=EMBEDDINGS_ENGINE):
 
 # Add embeddings to golden records
 
-golden_record_path = 'src/data/golden_records_questions.csv'
+golden_record_path = 'src/data/sql_query_examples.csv'
 
 df = pd.read_csv(golden_record_path)
 df['id'] = df.index.astype(str)
@@ -40,7 +40,7 @@ df['embedding'] = df["question"].apply(
 golden_record_json = {"value": df.to_dict(orient='records')}
 
 
-with open('./src/data/golden_records.json', 'w') as file:
+with open('./src/data/sql_query_examples.json', 'w') as file:
     file.write(json.dumps(golden_record_json))
 
 # Define the endpoint and index name
@@ -79,7 +79,7 @@ if response.status_code == 200:
 else:
     print("Error:", response.status_code, response.text)
 
-file_path = './src/data/golden_records.json'
+file_path = './src/data/sql_query_examples.json'
 
 
 with open(file_path, 'r') as file:
