@@ -30,5 +30,4 @@
 - Add instructions
 - auth options - use entra ID rather than DB password
 - Consider MySQL, Postgres (could be long-term)
-- Networking - currently I have whitelisted
-- Move to Azure repo - (keep private)
+- Networking - currently it is whitelisted
