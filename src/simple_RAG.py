@@ -3,7 +3,7 @@ import os
 from dotenv import load_dotenv
 import re
 from time import perf_counter
-
+import json
 import numpy as np
 import pandas as pd
 import psycopg2
@@ -32,16 +32,11 @@ from retry import retry
 from src.utils.database import run_query
 from src.utils.metrics import calculate_cosine
 
-# TODO: Add retry
-# TODO: Consider reformatting the schema to lower token count and make it more readable
-# TODO: What happens with really long sql execution results?
-# TODO: Consider using non GT document
-
 load_dotenv(override=True)
 API_KEY = os.getenv("AOAI_API_KEY")
 COGSEARCH_API_KEY=os.getenv("AI_COG_SEARCH_KEY")
 DB_PASSWORD = os.getenv("DB_PASSWORD")
-SKIP_INVALID_GROUND_TRUTH = True
+# SKIP_INVALID_GROUND_TRUTH = True
 
 
 connection_string = f"DRIVER={{ODBC Driver 17 for SQL Server}};SERVER={DB_HOST},{DB_PORT};DATABASE={DB_NAME};UID={DB_USER};PWD={DB_PASSWORD}"
@@ -75,7 +70,7 @@ def generate_output_df(top_k):
 
 
 def get_top_k_most_similar_examples(
-    client, query, embeddings_db, top_k, filter_exact_match=True
+    client, query, top_k
 ):
     endpoint = "https://cogsearch-remmey.search.windows.net"
     index_name="customer-index"
@@ -88,38 +83,25 @@ def get_top_k_most_similar_examples(
     "api-key": f"{COGSEARCH_API_KEY}"
     }
 
-    client = AzureOpenAI(
-        azure_endpoint=RESOURCE_ENDPOINT,
-        api_key=API_KEY,
-        api_version="2024-05-01-preview",
-    )
-
-    # @retry(delay=1, backoff=1.1, tries=5)
-    # def get_embeddings(client, text, model=EMBEDDINGS_ENGINE):
-    #     text = text.replace("\n", " ")
-    #     return client.embeddings.create(input=[text], model=model).data[0].embedding
-
     vector = get_embeddings(client, "How many products are in the Adventure Works database?")
 
     data={
-    "count": True,
-    "select": "question,sql_query",
-    "vectorQueries": [
-        {
-        "vector": vector,
-        "k": 3,
-        "fields": "embedding",
-        "kind": "vector",
-        'exhaustive': True
-        }
-    ]
+        "count": True,
+        "select": "question,sql_query",
+        "vectorQueries": [
+            {
+                "vector": vector,
+                "k": top_k,
+                "fields": "embedding",
+                "kind": "vector",
+                'exhaustive': True
+            }
+        ]
     }
-
-
 
     print(headers)
     print('url', url)
-    print('data:', data)
+    # print('data:', data)
 
     response = requests.post(url, headers=headers, data=json.dumps(data))
     print(response.json())
@@ -136,13 +118,13 @@ def get_top_k_most_similar_examples(
     return context_string
 
 
-def format_examples(df):
+# def format_examples(df):
 
-    context = [
-        f"Question: {q}\nSQL Server Query: {sql}\n\n"
-        for q, sql in zip(df["question"], df["sql_query"])
-    ]
-    return "".join(context)
+#     context = [
+#         f"Question: {q}\nSQL Server Query: {sql}\n\n"
+#         for q, sql in zip(df["question"], df["sql_query"])
+#     ]
+#     return "".join(context)
 
 
 def remove_sql_markers(sql_string):
@@ -164,16 +146,15 @@ def call_gpt(client, system_prompt, user_prompt, engine):
     return completion_response.choices[0].message.content
 
 
-def find_ground_truth_if_it_exists(query):
-    return next(
-        (
-            record["sql_query"]
-            for record in sql_query_examples
-            if record["question"] == query
-        ),
-        None,
-    )
-
+# def find_ground_truth_if_it_exists(query):
+#     return next(
+#         (
+#             record["sql_query"]
+#             for record in sql_query_examples
+#             if record["question"] == query
+#         ),
+#         None,
+#     )
 
 def run_nl_to_sql(
     input_query,
@@ -184,21 +165,18 @@ def run_nl_to_sql(
     previous_try=None,
     retry_error=None,
 ):
-    examples = get_top_k_most_similar_examples(
-        client, input_query, embeddings_db, top_k
+    nl_to_sql_system_prompt = get_top_k_most_similar_examples(
+        client, input_query, top_k
     )
     print(f"\033[92m{input_query}\033[0m")
     print(f"Found top {top_k} most similar questions:")
-    print(examples["question"].values)
+    print("nl_to_sql_system_prompt", nl_to_sql_system_prompt)
 
-    nl_to_sql_system_prompt = generate_nl_to_sql_system_prompt(
-        schema, format_examples(examples)
-    )
 
     nl_to_sql_user_prompt = generate_nl_to_sql_user_prompt(input_query)
 
     if retry_error and previous_try:
-        nl_to_sql_user_prompt = f"{nl_to_sql_user_prompt}\n\nYou already tried once with:\n{previous_try}It failed with: {retry_error}\n\n"
+        nl_to_sql_user_prompt = f"{nl_to_sql_user_prompt}\n\nYou already tried once with:\n{previous_try}. It failed with: {retry_error}\n\n"
 
     print("nl_to_sql_system_prompt", nl_to_sql_system_prompt)
     print("nl_to_sql_user_prompt", nl_to_sql_user_prompt)
@@ -243,8 +221,6 @@ def run_sql_to_nl(input_query, client, sql_completion):
 
     return nl_to_sql_completion, nl_to_sql_execution_time, sql_execution_result
 
-# Create a fun
-
 
 def run_end_to_end(
     query_csv_path, embeddings_db, top_k, client, output_file_path, schema_desc_path
@@ -252,8 +228,8 @@ def run_end_to_end(
 
     nl_to_sql_completions = []
     nl_to_sql_execution_times = []
-    ground_truths = []
-    ground_truth_validities = []
+    # ground_truths = []
+    # ground_truth_validities = []
     sql_to_nl_completions = []
     ground_truth_sql_to_nl_completions = []
     sql_to_nl_execution_times = []
@@ -338,12 +314,6 @@ def run_end_to_end(
             sql_to_nl_execution_time += sql_to_nl_retry_execution_time
             nl_to_sql_execution_time += nl_to_sql_execution_retry_time
             
-        # Runs SQL to NL with ground truth
-        # (
-        #     ground_truth_sql_to_nl_completion,
-        #     ground_truth_sql_to_nl_execution_time,
-        #     ground_truth_sql_execution_result,
-        # ) = run_sql_to_nl(input_query, client, ground_truth)
         
        
         
@@ -369,9 +339,9 @@ def run_end_to_end(
     nl_to_sql_execution_time_df = pd.DataFrame(
         nl_to_sql_execution_times, columns=["nl_to_sql_execution_time"]
     )
-    ground_truth_validity_df = pd.DataFrame(
-        ground_truth_validities, columns=["ground_truth_validity"]
-    )
+    # ground_truth_validity_df = pd.DataFrame(
+    #     ground_truth_validities, columns=["ground_truth_validity"]
+    # )
     sql_to_nl_completion_df = pd.DataFrame(
         sql_to_nl_completions, columns=["SQL-to-NL response"]
     )
@@ -381,13 +351,13 @@ def run_end_to_end(
     sql_execution_results_df = pd.DataFrame(
         sql_execution_results, columns=["SQL Query Results"]
     )
-    ground_truth_sql_to_nl_completion_df = pd.DataFrame(
-        ground_truth_sql_to_nl_completions, columns=["Ground Truth SQL-to-NL response"]
-    )
-    ground_truth_sql_execution_results_df = pd.DataFrame(
-        ground_truth_sql_execution_results,
-        columns=["Ground Truth SQL Execution Results"],
-    )
+    # ground_truth_sql_to_nl_completion_df = pd.DataFrame(
+    #     ground_truth_sql_to_nl_completions, columns=["Ground Truth SQL-to-NL response"]
+    # )
+    # ground_truth_sql_execution_results_df = pd.DataFrame(
+    #     ground_truth_sql_execution_results,
+    #     columns=["Ground Truth SQL Execution Results"],
+    # )
     retry_df = pd.DataFrame(retries, columns=["retries"]) 
      
     result = pd.concat(
@@ -396,12 +366,12 @@ def run_end_to_end(
             nl_to_sql_completion_df,
             # ground_truth_df,
             nl_to_sql_execution_time_df,
-            ground_truth_validity_df,
+            # ground_truth_validity_df,
             sql_to_nl_completion_df,
             sql_to_nl_execution_time_df,
             sql_execution_results_df,
-            ground_truth_sql_to_nl_completion_df,
-            ground_truth_sql_execution_results_df,
+            # ground_truth_sql_to_nl_completion_df,
+            # ground_truth_sql_execution_results_df,
             retry_df
         ],
         axis=1,

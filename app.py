@@ -19,13 +19,13 @@ def main():
 
             client = set_up_client()
 
-            # Step 1
+            # Step 1 NL to SQL
             sql_completion, nl_to_sql_execution_time = run_nl_to_sql(
                 user_query, client, embeddings_db, top_k, schema
             )
             st.write(f"SQL Query: {sql_completion}")
 
-            # step 2:
+            # step 2:SQL to NL 
             (
               sql_to_nl_completion,
               sql_to_nl_execution_time,

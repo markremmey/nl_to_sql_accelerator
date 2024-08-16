@@ -3,7 +3,7 @@ import os
 
 import pandas as pd
 from constants import EMBEDDINGS_ENGINE, RESOURCE_ENDPOINT
-from data.sql_query_examples import sql_query_examples
+from data.sql_query_examples_py import sql_query_examples
 from openai import AzureOpenAI
 from retry import retry
 
